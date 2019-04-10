@@ -1,0 +1,28 @@
+{
+  "name": "BaselineGenerator",
+  "version": "1.0.0",
+  "description": "Test tool for creating baseline data",
+  "main": "./src/main.js",
+  "scripts": {
+    "start": "node ./src/main.js"
+  },
+  "directories": {
+    "output": "output",
+    "baseline": "baseline",
+    "src": "src"
+  },
+  "devDependencies": {
+    "fast-csv": "^2.4.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/01org/web-test-suite/BaselineGenerator.git"
+  },
+  "keywords": [],
+  "author": "yanx.cui@intel.com",
+  "license": "Apache 2.0",
+  "bugs": {
+    "url": "https://github.com/01org/web-test-suite/BaselineGenerator/issues"
+  },
+  "homepage": "https://github.com/01org/web-test-suite/BaselineGenerator#readme"
+}
