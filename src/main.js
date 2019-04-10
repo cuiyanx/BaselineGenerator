@@ -180,7 +180,7 @@ fs.readdir(baseLineDataPath, function(err, files) {
                 }).on("end", function() {
                     csvCount = csvCount + 1;
 
-                    if (csvCount == files.length - 1) {
+                    if (csvCount == files.length) {
                         for (let value of baseLineData.values()) {
                             csvStream.write(value);
                         }
