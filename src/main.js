@@ -39,6 +39,7 @@ var csvStream = csv.createWriteStream({headers: true}).transform(function(row) {
     "Windows-WASM": row.WWASM,
     "Windows-WebGL": row.WWebGL,
     "Linux-clDNN": row.LclDNN,
+    "Linux-IE-MKLDNN": row.LIEMKLDNN,
     "Linux-MKLDNN": row.LMKLDNN,
     "Linux-WASM": row.LWASM,
     "Linux-WebGL": row.LWebGL
@@ -136,6 +137,14 @@ fs.readdir(baseLineDataPath, function(err, files) {
                                 backend = "Linux-WebGL";
                                 csvRow = "LWebGL";
                                 break;
+                            case "ie":
+                                switch(filenameArray[3]) {
+                                    case "mkldnn":
+                                        backend = "Linux-IE-MKLDNN";
+                                        csvRow = "LIEMKLDNN";
+                                        break;
+                                };
+                                break;
                         };
                         break;
                 }
@@ -171,7 +180,7 @@ fs.readdir(baseLineDataPath, function(err, files) {
                 }).on("end", function() {
                     csvCount = csvCount + 1;
 
-                    if (csvCount == files.length) {
+                    if (csvCount == files.length - 1) {
                         for (let value of baseLineData.values()) {
                             csvStream.write(value);
                         }
