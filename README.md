@@ -16,7 +16,8 @@ This is an automation tool for creating baseline data.
      "Version": {
        "chromium": "313c1c2",
        "polyfill": "cfa0a2f"
-     }
+     },
+     "CPUType": "x64"
    }
 ```
 
