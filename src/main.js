@@ -22,6 +22,8 @@ if (!fs.existsSync(outputPath)) {
 var readCSVFlag = new Object();
 var baseLineData = new Map();
 var baseLineJSON = new Map();
+var generalFileArray = new Array();
+var realModelFileArray = new Array();
 
 var csvStream = csv.createWriteStream({headers: true}).transform(function(row) {return {
     "Feature": row.Feature,
@@ -149,15 +151,41 @@ fs.readdir(baseLineDataPath, function(err, files) {
                 prefer = "Android-WebNN-Low-NNAPI";
                 csvRow = "AWLNNAPI";
             } else {
-                let str = "This file is not test report file: " + filename;
+                let str = "This file is incorrect backend: " + filename;
                 throw new Error(str);
             }
 
-            baseLineJSON[prefer] = new Map();
-            baseLineJSON[prefer]["total"] = 0;
-            baseLineJSON[prefer]["pass"] = 0;
-            baseLineJSON[prefer]["fail"] = 0;
-            baseLineJSON[prefer]["block"] = 0;
+            let keyWord = null;
+            if (filename.includes("general")) {
+                keyWord = "general";
+                generalFileArray.push(filename);
+            } else if (filename.includes("realModel")) {
+                keyWord = "realModel";
+                realModelFileArray.push(filename);
+            } else {
+                let str = "This file is incorrect model: " + filename;
+                throw new Error(str);
+            }
+
+            if (typeof baseLineJSON[prefer] === "undefined") {
+                baseLineJSON[prefer] = new Map();
+            }
+
+            if (keyWord === "general") {
+                baseLineJSON[prefer]["total"] = 0;
+                baseLineJSON[prefer]["pass"] = 0;
+                baseLineJSON[prefer]["fail"] = 0;
+                baseLineJSON[prefer]["block"] = 0;
+            } else if (keyWord === "realModel") {
+                if (typeof baseLineJSON[prefer]["realModel"] === "undefined") {
+                    baseLineJSON[prefer]["realModel"] = new Map();
+                }
+
+                baseLineJSON[prefer]["realModel"]["total"] = 0;
+                baseLineJSON[prefer]["realModel"]["pass"] = 0;
+                baseLineJSON[prefer]["realModel"]["fail"] = 0;
+                baseLineJSON[prefer]["realModel"]["block"] = 0;
+            }
 
             baseLineData.set(filename, new Map());
 
@@ -176,16 +204,32 @@ fs.readdir(baseLineDataPath, function(err, files) {
 
                     if (data["Pass"] == "1") {
                         baseLineData.get(filename).get(keyName).set("result", "Pass");
-                        baseLineJSON[prefer]["pass"] = baseLineJSON[prefer]["pass"] + 1;
+                        if (keyWord === "general") {
+                            baseLineJSON[prefer]["pass"] = baseLineJSON[prefer]["pass"] + 1;
+                        } else if (keyWord === "realModel") {
+                            baseLineJSON[prefer]["realModel"]["pass"] = baseLineJSON[prefer]["realModel"]["pass"] + 1;
+                        }
                     } else if (data["Fail"] == "1") {
                         baseLineData.get(filename).get(keyName).set("result", "Fail");
-                        baseLineJSON[prefer]["fail"] = baseLineJSON[prefer]["fail"] + 1;
+                        if (keyWord === "general") {
+                            baseLineJSON[prefer]["fail"] = baseLineJSON[prefer]["fail"] + 1;
+                        } else if (keyWord === "realModel") {
+                            baseLineJSON[prefer]["realModel"]["fail"] = baseLineJSON[prefer]["realModel"]["fail"] + 1;
+                        }
                     } else if (data["N/A"] == "1") {
                         baseLineData.get(filename).get(keyName).set("result", "N/A");
-                        baseLineJSON[prefer]["block"] = baseLineJSON[prefer]["block"] + 1;
+                        if (keyWord === "general") {
+                            baseLineJSON[prefer]["block"] = baseLineJSON[prefer]["block"] + 1;
+                        } else if (keyWord === "realModel") {
+                            baseLineJSON[prefer]["realModel"]["block"] = baseLineJSON[prefer]["realModel"]["block"] + 1;
+                        }
                     }
 
-                    baseLineJSON[prefer]["total"] = baseLineJSON[prefer]["total"] + 1;
+                    if (keyWord === "general") {
+                        baseLineJSON[prefer]["total"] = baseLineJSON[prefer]["total"] + 1;
+                    } else if (keyWord === "realModel") {
+                        baseLineJSON[prefer]["realModel"]["total"] = baseLineJSON[prefer]["realModel"]["total"] + 1;
+                    }
                 }
             })
             .on("end", function() {
@@ -194,34 +238,72 @@ fs.readdir(baseLineDataPath, function(err, files) {
 
                 if (!Object.values(readCSVFlag).includes(false)) {
                     let filenameFlag = null;
-                    for (let filename of baseLineData.keys()) {
-                        if (filenameFlag == null) {
-                            filenameFlag = filename;
-                        }
-                    }
 
-                    console.log("check baseline data...");
-                    for (let testCase of baseLineData.get(filenameFlag).keys()) {
-                        for (let filename of baseLineData.keys()) {
-                            if (!baseLineData.get(filename).has(testCase)) {
-                                let str = "Between '" + filename + "'\nand '" + filenameFlag + "',\n" + "This test case is not the same: " + testCase;
-                                throw new Error(str);
+                    console.log("check baseline data of general test cases...");
+                    if (generalFileArray.length > 1) {
+                        filenameFlag = generalFileArray[0];
+
+                        for (let testCase of baseLineData.get(filenameFlag).keys()) {
+                            for (let filename of generalFileArray) {
+                                if (!baseLineData.get(filename).has(testCase)) {
+                                    let str = "Between '" + filename + "'\nand '" + filenameFlag + "',\n" + "This test case is not the same: " + testCase;
+                                    throw new Error(str);
+                                }
                             }
                         }
+                    } else {
+                        console.log("there are " + generalFileArray.length + " general test cases, that no need to check!");
+                    }
+
+                    console.log("check baseline data of real model test cases...");
+                    if (realModelFileArray.length > 1) {
+                        filenameFlag = realModelFileArray[0];
+
+                        for (let testCase of baseLineData.get(filenameFlag).keys()) {
+                            for (let filename of realModelFileArray) {
+                                if (!baseLineData.get(filename).has(testCase)) {
+                                    let str = "Between '" + filename + "'\nand '" + filenameFlag + "',\n" + "This test case is not the same: " + testCase;
+                                    throw new Error(str);
+                                }
+                            }
+                        }
+                    } else {
+                        console.log("there are " + realModelFileArray.length + " real model test cases, that no need to check!");
                     }
 
                     console.log("generate baseline data...");
-                    for (let testCase of baseLineData.get(filenameFlag).keys()) {
-                        let DataFormat = new Object();
-                        DataFormat["Feature"] = baseLineData.get(filenameFlag).get(testCase).get("Feature");
-                        DataFormat["CaseId"] = baseLineData.get(filenameFlag).get(testCase).get("Case Id");
-                        DataFormat["TestCase"] = baseLineData.get(filenameFlag).get(testCase).get("Test Case");
+                    if (generalFileArray.length !== 0) {
+                        filenameFlag = generalFileArray[0];
 
-                        for (let filename of baseLineData.keys()) {
-                            DataFormat[baseLineData.get(filename).get(testCase).get("csvRow")] = baseLineData.get(filename).get(testCase).get("result");
+                        for (let testCase of baseLineData.get(filenameFlag).keys()) {
+                            let DataFormat = new Object();
+                            DataFormat["Feature"] = baseLineData.get(filenameFlag).get(testCase).get("Feature");
+                            DataFormat["CaseId"] = baseLineData.get(filenameFlag).get(testCase).get("Case Id");
+                            DataFormat["TestCase"] = baseLineData.get(filenameFlag).get(testCase).get("Test Case");
+
+                            for (let filename of generalFileArray) {
+                                DataFormat[baseLineData.get(filename).get(testCase).get("csvRow")] = baseLineData.get(filename).get(testCase).get("result");
+                            }
+
+                            csvStream.write(DataFormat);
                         }
+                    }
 
-                        csvStream.write(DataFormat);
+                    if (realModelFileArray.length !== 0) {
+                        filenameFlag = realModelFileArray[0];
+
+                        for (let testCase of baseLineData.get(filenameFlag).keys()) {
+                            let DataFormat = new Object();
+                            DataFormat["Feature"] = baseLineData.get(filenameFlag).get(testCase).get("Feature");
+                            DataFormat["CaseId"] = baseLineData.get(filenameFlag).get(testCase).get("Case Id");
+                            DataFormat["TestCase"] = baseLineData.get(filenameFlag).get(testCase).get("Test Case");
+
+                            for (let filename of realModelFileArray) {
+                                DataFormat[baseLineData.get(filename).get(testCase).get("csvRow")] = baseLineData.get(filename).get(testCase).get("result");
+                            }
+
+                            csvStream.write(DataFormat);
+                        }
                     }
 
                     console.log("generate baseline json...");
