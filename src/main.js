@@ -32,7 +32,7 @@ var csvStream = csv.createWriteStream({headers: true}).transform(function(row) {
     "macOS-Polyfill-Fast-WASM": row.MPFWASM,
     "macOS-Polyfill-Sustained-WebGL": row.MPSWEBGL,
     "macOS-WebNN-Fast-BNNS": row.MWFBNNS,
-    "macOS-WebNN-Fast-MKLDNN": row.MWFMKLDNN,
+    "macOS-WebNN-Fast-DNNL": row.MWFDNNL,
     "macOS-WebNN-Sustained-MPS": row.MWSMPS,
     "Android-Polyfill-Fast-WASM": row.APFWASM,
     "Android-Polyfill-Sustained-WebGL": row.APSWEBGL,
@@ -41,15 +41,15 @@ var csvStream = csv.createWriteStream({headers: true}).transform(function(row) {
 //    "Android-WebNN-Low-NNAPI": row.AWLNNAPI,
     "Win-Polyfill-Fast-WASM": row.WPFWASM,
     "Win-Polyfill-Sustained-WebGL": row.WPSWEBGL,
-    "Win-WebNN-Fast-MKLDNN": row.WWFMKLDNN,
+    "Win-WebNN-Fast-DNNL": row.WWFDNNL,
     "Win-WebNN-Sustained-DML": row.WWSDML,
     "Win-WebNN-Sustained-clDNN": row.WWSCLDNN,
     "Win-WebNN-Low-DML": row.WWLDML,
     "Linux-Polyfill-Fast-WASM": row.LPFWASM,
     "Linux-Polyfill-Sustained-WebGL": row.LPSWEBGL,
-    "Linux-WebNN-Fast-MKLDNN": row.LWFMKLDNN,
+    "Linux-WebNN-Fast-DNNL": row.LWFDNNL,
     "Linux-WebNN-Sustained-clDNN": row.LWSCLDNN,
-    "Linux-WebNN-Fast-IE-MKLDNN": row.LWFIEMKLDNN,
+    "Linux-WebNN-Fast-IE-DNNL": row.LWFIEDNNL,
     "Linux-WebNN-Sustained-IE-clDNN": row.LWSIECLDNN,
     "Linux-WebNN-Low-IE-MYRIAD": row.LWLIEMYRIAD
 }});
@@ -90,9 +90,9 @@ fs.readdir(baseLineDataPath, function(err, files) {
             } else if (filename.includes("macOS-WebNN-Fast-BNNS")) {
                 prefer = "macOS-WebNN-Fast-BNNS";
                 csvRow = "MWFBNNS";
-            } else if (filename.includes("macOS-WebNN-Fast-MKLDNN")) {
-                prefer = "macOS-WebNN-Fast-MKLDNN";
-                csvRow = "MWFMKLDNN";
+            } else if (filename.includes("macOS-WebNN-Fast-DNNL")) {
+                prefer = "macOS-WebNN-Fast-DNNL";
+                csvRow = "MWFDNNL";
             } else if (filename.includes("macOS-WebNN-Sustained-MPS")) {
                 prefer = "macOS-WebNN-Sustained-MPS";
                 csvRow = "MWSMPS";
@@ -102,15 +102,15 @@ fs.readdir(baseLineDataPath, function(err, files) {
             } else if (filename.includes("Linux-Polyfill-Sustained-WebGL")) {
                 prefer = "Linux-Polyfill-Sustained-WebGL";
                 csvRow = "LPSWEBGL";
-            } else if (filename.includes("Linux-WebNN-Fast-MKLDNN")) {
-                prefer = "Linux-WebNN-Fast-MKLDNN";
-                csvRow = "LWFMKLDNN";
+            } else if (filename.includes("Linux-WebNN-Fast-DNNL")) {
+                prefer = "Linux-WebNN-Fast-DNNL";
+                csvRow = "LWFDNNL";
             } else if (filename.includes("Linux-WebNN-Sustained-clDNN")) {
                 prefer = "Linux-WebNN-Sustained-clDNN";
                 csvRow = "LWSCLDNN";
-            } else if (filename.includes("Linux-WebNN-Fast-IE-MKLDNN")) {
-                prefer = "Linux-WebNN-Fast-IE-MKLDNN";
-                csvRow = "LWFIEMKLDNN";
+            } else if (filename.includes("Linux-WebNN-Fast-IE-DNNL")) {
+                prefer = "Linux-WebNN-Fast-IE-DNNL";
+                csvRow = "LWFIEDNNL";
             } else if (filename.includes("Linux-WebNN-Sustained-IE-clDNN")) {
                 prefer = "Linux-WebNN-Sustained-IE-clDNN";
                 csvRow = "LWSIECLDNN";
@@ -123,9 +123,9 @@ fs.readdir(baseLineDataPath, function(err, files) {
             } else if (filename.includes("Win-Polyfill-Sustained-WebGL")) {
                 prefer = "Win-Polyfill-Sustained-WebGL";
                 csvRow = "WPSWEBGL";
-            } else if (filename.includes("Win-WebNN-Fast-MKLDNN")) {
-                prefer = "Win-WebNN-Fast-MKLDNN";
-                csvRow = "WWFMKLDNN";
+            } else if (filename.includes("Win-WebNN-Fast-DNNL")) {
+                prefer = "Win-WebNN-Fast-DNNL";
+                csvRow = "WWFDNNL";
             } else if (filename.includes("Win-WebNN-Sustained-DML")) {
                 prefer = "Win-WebNN-Sustained-DML";
                 csvRow = "WWSDML";
