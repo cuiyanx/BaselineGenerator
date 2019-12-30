@@ -49,7 +49,7 @@ var csvStream = csv.createWriteStream({headers: true}).transform(function(row) {
     "Linux-Polyfill-Sustained-WebGL": row.LPSWEBGL,
     "Linux-WebNN-Fast-DNNL": row.LWFDNNL,
     "Linux-WebNN-Sustained-clDNN": row.LWSCLDNN,
-    "Linux-WebNN-Fast-IE-DNNL": row.LWFIEDNNL,
+    "Linux-WebNN-Fast-IE-MKLDNN": row.LWFIEMKLDNN,
     "Linux-WebNN-Sustained-IE-clDNN": row.LWSIECLDNN,
     "Linux-WebNN-Low-IE-MYRIAD": row.LWLIEMYRIAD
 }});
@@ -108,9 +108,9 @@ fs.readdir(baseLineDataPath, function(err, files) {
             } else if (filename.includes("Linux-WebNN-Sustained-clDNN")) {
                 prefer = "Linux-WebNN-Sustained-clDNN";
                 csvRow = "LWSCLDNN";
-            } else if (filename.includes("Linux-WebNN-Fast-IE-DNNL")) {
-                prefer = "Linux-WebNN-Fast-IE-DNNL";
-                csvRow = "LWFIEDNNL";
+            } else if (filename.includes("Linux-WebNN-Fast-IE-MKLDNN")) {
+                prefer = "Linux-WebNN-Fast-IE-MKLDNN";
+                csvRow = "LWFIEMKLDNN";
             } else if (filename.includes("Linux-WebNN-Sustained-IE-clDNN")) {
                 prefer = "Linux-WebNN-Sustained-IE-clDNN";
                 csvRow = "LWSIECLDNN";
