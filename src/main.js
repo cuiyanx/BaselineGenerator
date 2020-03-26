@@ -42,16 +42,21 @@ var csvStream = csv.createWriteStream({headers: true}).transform(function(row) {
     "Win-Polyfill-Fast-WASM": row.WPFWASM,
     "Win-Polyfill-Sustained-WebGL": row.WPSWEBGL,
     "Win-WebNN-Fast-DNNL": row.WWFDNNL,
+    "Win-WebNN-Fast-IE-MKLDNN": row.WWFIEMKLDNN,
     "Win-WebNN-Sustained-DML": row.WWSDML,
+    "Win-WebNN-Sustained-IE-clDNN": row.WWSIECLDNN,
     "Win-WebNN-Sustained-clDNN": row.WWSCLDNN,
     "Win-WebNN-Low-DML": row.WWLDML,
+    "Win-WebNN-Low-IE-MYRIAD": row.WWLIEMYRIAD,
+    "Win-WebNN-Ultra-Low-IE-GNA": row.WWLIEGNA,
     "Linux-Polyfill-Fast-WASM": row.LPFWASM,
     "Linux-Polyfill-Sustained-WebGL": row.LPSWEBGL,
     "Linux-WebNN-Fast-DNNL": row.LWFDNNL,
-    "Linux-WebNN-Sustained-clDNN": row.LWSCLDNN,
     "Linux-WebNN-Fast-IE-MKLDNN": row.LWFIEMKLDNN,
+    "Linux-WebNN-Sustained-clDNN": row.LWSCLDNN,
     "Linux-WebNN-Sustained-IE-clDNN": row.LWSIECLDNN,
-    "Linux-WebNN-Low-IE-MYRIAD": row.LWLIEMYRIAD
+    "Linux-WebNN-Low-IE-MYRIAD": row.LWLIEMYRIAD,
+    "Linux-WebNN-Ultra-Low-IE-GNA": row.LWLIEGNA
 }});
 
 csvStream.pipe(fs.createWriteStream(csvFilePath));
@@ -96,45 +101,6 @@ fs.readdir(baseLineDataPath, function(err, files) {
             } else if (filename.includes("macOS-WebNN-Sustained-MPS")) {
                 prefer = "macOS-WebNN-Sustained-MPS";
                 csvRow = "MWSMPS";
-            } else if (filename.includes("Linux-Polyfill-Fast-WASM")) {
-                prefer = "Linux-Polyfill-Fast-WASM";
-                csvRow = "LPFWASM";
-            } else if (filename.includes("Linux-Polyfill-Sustained-WebGL")) {
-                prefer = "Linux-Polyfill-Sustained-WebGL";
-                csvRow = "LPSWEBGL";
-            } else if (filename.includes("Linux-WebNN-Fast-DNNL")) {
-                prefer = "Linux-WebNN-Fast-DNNL";
-                csvRow = "LWFDNNL";
-            } else if (filename.includes("Linux-WebNN-Sustained-clDNN")) {
-                prefer = "Linux-WebNN-Sustained-clDNN";
-                csvRow = "LWSCLDNN";
-            } else if (filename.includes("Linux-WebNN-Fast-IE-MKLDNN")) {
-                prefer = "Linux-WebNN-Fast-IE-MKLDNN";
-                csvRow = "LWFIEMKLDNN";
-            } else if (filename.includes("Linux-WebNN-Sustained-IE-clDNN")) {
-                prefer = "Linux-WebNN-Sustained-IE-clDNN";
-                csvRow = "LWSIECLDNN";
-            } else if (filename.includes("Linux-WebNN-Low-IE-MYRIAD")) {
-                prefer = "Linux-WebNN-Low-IE-MYRIAD";
-                csvRow = "LWLIEMYRIAD";
-            } else if (filename.includes("Win-Polyfill-Fast-WASM")) {
-                prefer = "Win-Polyfill-Fast-WASM";
-                csvRow = "WPFWASM";
-            } else if (filename.includes("Win-Polyfill-Sustained-WebGL")) {
-                prefer = "Win-Polyfill-Sustained-WebGL";
-                csvRow = "WPSWEBGL";
-            } else if (filename.includes("Win-WebNN-Fast-DNNL")) {
-                prefer = "Win-WebNN-Fast-DNNL";
-                csvRow = "WWFDNNL";
-            } else if (filename.includes("Win-WebNN-Sustained-DML")) {
-                prefer = "Win-WebNN-Sustained-DML";
-                csvRow = "WWSDML";
-            } else if (filename.includes("Win-WebNN-Sustained-clDNN")) {
-                prefer = "Win-WebNN-Sustained-clDNN";
-                csvRow = "WWSCLDNN";
-            } else if (filename.includes("Win-WebNN-Low-DML")) {
-                prefer = "Win-WebNN-Low-DML";
-                csvRow = "WWLDML";
             } else if (filename.includes("Android-Polyfill-Fast-WASM") && filename.includes(CPUType)) {
                 prefer = "Android-Polyfill-Fast-WASM";
                 csvRow = "APFWASM";
@@ -150,6 +116,60 @@ fs.readdir(baseLineDataPath, function(err, files) {
             } else if (filename.includes("Android-WebNN-Low-NNAPI") && filename.includes(CPUType)) {
                 prefer = "Android-WebNN-Low-NNAPI";
                 csvRow = "AWLNNAPI";
+            } else if (filename.includes("Win-Polyfill-Fast-WASM")) {
+                prefer = "Win-Polyfill-Fast-WASM";
+                csvRow = "WPFWASM";
+            } else if (filename.includes("Win-Polyfill-Sustained-WebGL")) {
+                prefer = "Win-Polyfill-Sustained-WebGL";
+                csvRow = "WPSWEBGL";
+            } else if (filename.includes("Win-WebNN-Fast-DNNL")) {
+                prefer = "Win-WebNN-Fast-DNNL";
+                csvRow = "WWFDNNL";
+            } else if (filename.includes("Win-WebNN-Fast-IE-MKLDNN")) {
+                prefer = "Win-WebNN-Fast-IE-MKLDNN";
+                csvRow = "WWFIEMKLDNN";
+            } else if (filename.includes("Win-WebNN-Sustained-DML")) {
+                prefer = "Win-WebNN-Sustained-DML";
+                csvRow = "WWSDML";
+            } else if (filename.includes("Win-WebNN-Sustained-IE-clDNN")) {
+                prefer = "Win-WebNN-Sustained-IE-clDNN";
+                csvRow = "WWSIECLDNN";
+            } else if (filename.includes("Win-WebNN-Sustained-clDNN")) {
+                prefer = "Win-WebNN-Sustained-clDNN";
+                csvRow = "WWSCLDNN";
+            } else if (filename.includes("Win-WebNN-Low-DML")) {
+                prefer = "Win-WebNN-Low-DML";
+                csvRow = "WWLDML";
+            } else if (filename.includes("Win-WebNN-Low-IE-MYRIAD")) {
+                prefer = "Win-WebNN-Low-IE-MYRIAD";
+                csvRow = "WWLIEMYRIAD";
+            } else if (filename.includes("Win-WebNN-Ultra-Low-IE-GNA")) {
+                prefer = "Win-WebNN-Ultra-Low-IE-GNA";
+                csvRow = "WWLIEGNA";
+            } else if (filename.includes("Linux-Polyfill-Fast-WASM")) {
+                prefer = "Linux-Polyfill-Fast-WASM";
+                csvRow = "LPFWASM";
+            } else if (filename.includes("Linux-Polyfill-Sustained-WebGL")) {
+                prefer = "Linux-Polyfill-Sustained-WebGL";
+                csvRow = "LPSWEBGL";
+            } else if (filename.includes("Linux-WebNN-Fast-DNNL")) {
+                prefer = "Linux-WebNN-Fast-DNNL";
+                csvRow = "LWFDNNL";
+            } else if (filename.includes("Linux-WebNN-Fast-IE-MKLDNN")) {
+                prefer = "Linux-WebNN-Fast-IE-MKLDNN";
+                csvRow = "LWFIEMKLDNN";
+            } else if (filename.includes("Linux-WebNN-Sustained-clDNN")) {
+                prefer = "Linux-WebNN-Sustained-clDNN";
+                csvRow = "LWSCLDNN";
+            } else if (filename.includes("Linux-WebNN-Sustained-IE-clDNN")) {
+                prefer = "Linux-WebNN-Sustained-IE-clDNN";
+                csvRow = "LWSIECLDNN";
+            } else if (filename.includes("Linux-WebNN-Low-IE-MYRIAD")) {
+                prefer = "Linux-WebNN-Low-IE-MYRIAD";
+                csvRow = "LWLIEMYRIAD";
+            } else if (filename.includes("Linux-WebNN-Ultra-Low-IE-GNA")) {
+                prefer = "Linux-WebNN-Ultra-Low-IE-GNA";
+                csvRow = "LWLIEGNA";
             } else {
                 let str = "This file is incorrect backend: " + filename;
                 throw new Error(str);
